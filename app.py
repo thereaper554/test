@@ -42,6 +42,6 @@ input = {
 df = pd.DataFrame(input , index = [0])
 
 if st.button("Predict Price"):
-    price_pred = model.predict(input_df)[0]
+    price_pred = model.predict(input)[0]
     st.success(f"Predicted Price: ${price_pred:.2f}")
 
