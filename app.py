@@ -8,40 +8,44 @@ Original file is located at
 """
 
 
-
 import streamlit as st
 import pandas as pd
 import joblib
 
-joblib.load("model_test.pkl")
+# Load the trained model
+model = joblib.load("model_test.pkl")
 
-age = st.number_input("Age" , max_value = 90 , min_value = 1 , value = 18)
-sex = st.selectbox("sex" , ["F" , "M"])
-situation = st.selectbox("situation" , ["virgin" , "not virgin"])
-skin_color = st.selectbox("skin" , ["white" , "yellow" ,"black"])
-weight = st.number_input("weight" , max_value = 100 , min_value = 20 , value = 20)
-Height = st.number_input("Height" , max_value = 200 , min_value = 100 , value = 100)
-beauty = st.slider("beauty on 10" , 0,10,7)
+st.title("Price Prediction App")
 
+# Inputs
+age = st.number_input("Age", min_value=1, max_value=90, value=18)
+sex = st.selectbox("Sex", ["F", "M"])
+skin_color = st.selectbox("Skin Color", ["white", "yellow", "black"])
+weight = st.number_input("Weight", min_value=20, max_value=100, value=20)
+height = st.number_input("Height", min_value=100, max_value=200, value=100)
+beauty = st.slider("Beauty on 10", 0, 10, 7)
+
+# Encode categorical inputs
 sex_num = 0 if sex == "M" else 1
 skin_black = 1 if skin_color == "black" else 0
 skin_white = 1 if skin_color == "white" else 0
 skin_yellow = 1 if skin_color == "yellow" else 0
 
-input = {
-    "age" : age,
-    "sex" : sex,
-    "situation" : situation,
-     "skin_black": [skin_black],
+# Create input DataFrame
+input_df = pd.DataFrame({
+    "age": [age],
+    "sex": [sex_num],
+    "skin_black": [skin_black],
     "skin_white": [skin_white],
     "skin_yellow": [skin_yellow],
-    "weight" : weight,
-    "Height" : Height,
-    "beauty" : beauty
-}
-df = pd.DataFrame(input , index = [0])
+    "weight": [weight],
+    "Height": [height],
+    "beauty on 10": [beauty]
+})
 
+# Prediction
 if st.button("Predict Price"):
-    price_pred = model.predict(input)[0]
+    price_pred = model.predict(input_df)[0]
     st.success(f"Predicted Price: ${price_pred:.2f}")
+
 
